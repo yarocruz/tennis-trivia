@@ -29,10 +29,26 @@ export default function Home({ players, countries } : HomeProps) {
     }
   }
 
+  // selects next player by using the currentStep as the index number for playerData
   const nextPlayer = () => {
     setPickedCountry("")
     setCurrentStep(currentStep + 1)
     setStatus(null)
+  }
+
+  // logic to restart the game
+  const playAgain = async () => {
+    // reset state of countries and playerData
+    setPickedCountry("")
+    setPlayerData([])
+    const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + "/api/newGame"
+    );
+
+    const data = await response.json()
+    setPlayerData(data.players)
+    setCurrentStep(0)
+    setScore(0)
   }
 
   return (
@@ -112,6 +128,7 @@ export default function Home({ players, countries } : HomeProps) {
             <div>
               <button
                   autoFocus
+                  onClick={playAgain}
                   className="outline-none mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto"
               >
                 Play Again
