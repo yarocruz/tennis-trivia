@@ -1,5 +1,5 @@
 import { Player, uniqueCountries, top100Players } from "../lib/players"
-import { useState } from "react";
+import {useState, useRef, useEffect} from "react";
 
 type HomeProps = {
   players: Player[];
@@ -18,13 +18,20 @@ export default function Home({ players, countries } : HomeProps) {
   // current tennis player, which it starts at players[0]
   const player = playerData[currentStep]
 
+  // setting up a ref to set focus
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+   inputRef?.current?.focus()
+  }, [currentStep]);
+
+
   // function checks if the country selected is the country where current player (players[0]) is from
   const guessCountry = () => {
     if (player.country.toLocaleLowerCase() === pickedCountry.toLocaleLowerCase()) {
       setStatus({ status: "correct", country: player.country})
       setScore(score + 1)
     } else {
-      alert('incorrect')
       setStatus({ status: "incorrect", country: player.country})
     }
   }
@@ -99,6 +106,7 @@ export default function Home({ players, countries } : HomeProps) {
                         type="text"
                         value={pickedCountry}
                         onChange={(event => setPickedCountry(event.target.value))}
+                        ref={inputRef}
                         className="p-2 outline-none"
                         placeholder="Choose Country"
                     />
